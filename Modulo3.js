@@ -3,13 +3,7 @@ var inputElement = document.querySelector('#app input');
 var buttonElement = document.querySelector('#app button');
 
 
-var todos = [
-    'Fazer cafe',
-    'dormir',
-    'dormir',
-    'estudar',
-    'fazer robos'
-];
+var todos = JSON.parse(localStorage.getItem('list_todos')) || [];
 
 
 function renderTodos() {
@@ -17,20 +11,22 @@ function renderTodos() {
 
     for (todo of todos) {
         var todoElement = document.createElement('li');
-        var excluirTodo = document.createElement('a');
         var todoText = document.createTextNode(todo);
+
+        var excluirTodo = document.createElement('a');
+
+        excluirTodo.setAttribute('href', '#');
         var cont = todos.indexOf(todo);
 
-        excluirTodo.setAttribute(" Excluir");
-        excluirTodo.setAttribute('#');
         excluirTodo.setAttribute('onclick', 'deleteTodo(' + cont + ')');
+        var excluirtext = document.createTextNode(' Excluir');
 
         todoElement.appendChild(todoText);
-        todoElement.appendChild(excluirTodo);
         listElement.appendChild(todoElement);
+        todoElement.appendChild(excluirTodo);
+        excluirTodo.appendChild(excluirtext);
     }
 }
-
 renderTodos();
 
 function addTodo() {
@@ -39,6 +35,7 @@ function addTodo() {
     todos.push(todoText);
     inputElement.value = '';
     renderTodos();
+    saveToStorage();
 }
 
 buttonElement.onclick = addTodo;
@@ -46,4 +43,9 @@ buttonElement.onclick = addTodo;
 function deleteTodo(pos) {
     todos.splice(pos, 1);
     renderTodos();
+    saveToStorage();
+}
+
+function saveToStorage() {
+    localStorage.setItem('list_todos', JSON.stringify(todos));
 }
